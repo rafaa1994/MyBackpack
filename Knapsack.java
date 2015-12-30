@@ -263,10 +263,10 @@ public class Knapsack {
                 }
         }
         
-        for(int i = 0; i < collection.size() + 1;i++,System.out.print("\n"))
-            for(int j = 0; j < capacity + 1;j++){
-                System.out.print(table[i][j] + "\t");
-            }
+      //  for(int i = 0; i < collection.size() + 1;i++,System.out.print("\n"))
+       //     for(int j = 0; j < capacity + 1;j++){
+        //        System.out.print(table[i][j] + "\t");
+       //     }
         
         // szukamy rozwiązania w plecaku
         
@@ -296,41 +296,63 @@ public class Knapsack {
         return solution;
     }
     
-    public String pseudoPolynomialApproximateTimeScheme(int capacity){
+    public String fullyPolynomialApproximateTimeScheme(int capacity, double expo){
     solution = "";
     
     double best_value = 0;
+    double tmp_best_value = 0;
+    double tmp_value = 0;
     double best_weight = 0;
     int value_p = 0 ;
     
     if(!collection.isEmpty()){
     
+    // kolekcja tymczasowa
+       
+      List<Item> tmp = new ArrayList(); 
+        
     // wydobywamy najwieksza wartosc z kolekcji przedmiotow
     for(int i=0;i<collection.size();i++){
     if (collection.get(i).getValue()>best_value)
         best_value = collection.get(i).getValue();
     }
     
-    // okreslamy ograniczenie błędu względnego
-    int limit = collection.size() * (int)best_value;
-    System.out.println("Limit:" + limit + "\n");
+    // okreslamy skalar listy
+    double scale = (expo * best_value) / collection.size();
     
+    System.out.println("Skalar: " + scale + "\n");
+    
+    // skalujemy kolekcje i zawartosc dodajemy do tymczasowej
+    for(int i=0;i<collection.size();i++){
+        tmp_value  = Math.floor(collection.get(i).getValue() / scale);
+        tmp.add(new Item(collection.get(i).getWeight(), tmp_value));
+        if(tmp_value > tmp_best_value) tmp_best_value = tmp_value;
+    }
+    
+    System.out.println("collection\ttmp" );
+    for(int i=0;i<collection.size();i++){
+    System.out.println(collection.get(i).getValue() +"\t"+ tmp.get(i).getValue());
+    }
+    
+    // Ustalamy wielkości tablicy według wzoru (n * tmp_best_value +1)
+    int limit = (tmp.size() * (int)tmp_best_value);
+     System.out.println("Limit: " + limit + "\n");
     // tworzymy tabele wyniku
-    double [][]table = new double[collection.size()+1][limit+1];
+    double [][]table = new double[tmp.size()+1][limit+1];
     
     for(int i = 0; i <= collection.size();i++){
             table[i][0] = 0;
         for(int j = 1 ; j <= limit ; j++)
-            table[i][j] = 9999;
+            table[i][j] = 99999;
         }
     
-    // algorytm PTAS
+    // algorytm FPTAS
     
     do {
     value_p += 1;
-        for(int i = 1; i <= collection.size() ; i++){
+        for(int i = 1; i <= tmp.size() ; i++){
         
-            Item item_p = collection.get(i-1);
+            Item item_p = tmp.get(i-1);
             if(value_p - (int)item_p.getValue() < 0 || table[i-1][value_p - (int)item_p.getValue()] == 9999)
             table[i][value_p] = table[i-1][value_p];
           
@@ -345,15 +367,15 @@ public class Knapsack {
         
         int i = collection.size();
         int j = (int)best_value; 
-        List<Item> tmp = new ArrayList();
+        List<Item>tmp2 = new ArrayList();
  
         while (i > 0 && j > 0 ){
         
             if (table[i][j] != table[i-1][j])
             {
                 
-                tmp.add(collection.get(i-1));
-                j -= (int)collection.get(i-1).getValue();
+                tmp2.add(tmp.get(i-1));
+                j -= (int)tmp.get(i-1).getValue();
                 i--;
                 
             }
@@ -361,7 +383,13 @@ public class Knapsack {
         
         }
             
-            solution =  prepareSolutionToDisplay(best_value,best_weight, tmp);
+        
+        for(int ix=0;ix<collection.size()+1;ix++,System.out.println(ix + ". "))
+             for(int jx=0;jx<limit;jx++,System.out.print("\t")){
+             System.out.print(table[ix][jx]);
+             }
+        
+            solution =  prepareSolutionToDisplay(best_value,best_weight, tmp2);
     
     }else solution = "\nBrak danych do przetworzenia";
     

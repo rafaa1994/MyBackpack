@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
 /**
  *
  * @author Rafał Stępień
@@ -21,10 +22,10 @@ public class Main {
        Timer timer = new Timer();
         Knapsack knapsack = new Knapsack();
         String option ="";
-        String sth="";
+        double expo= 0;
         Scanner scanner = new Scanner(System.in);
         int capacity;
-        double total;
+        double total=0;
         ArrayList<Double> times = new ArrayList<Double>();
         
     System.out.println("\nWitaj w programie\n");
@@ -36,7 +37,7 @@ public class Main {
             + "\n3.Wykonaj algorytm plecakowy - zupełny"
             + "\n4.Wykonaj algorytm plecakowy - Branch and Bound"
             + "\n5.Wykonaj algorytm plecakowy - programowanie dynamiczne"
-            + "\n6.Wykonaj algorytm PTAS - oparty o algorytm programowania dynamicznego"
+            + "\n6.Wykonaj algorytm FPTAS - oparty o algorytm programowania dynamicznego"
             + "\n7.Wykonaj losowe generowanie kolekcji"
             + "\n8.Zakoncz");
     System.out.println("\nOpcja: ");
@@ -78,18 +79,32 @@ public class Main {
            break;
             
         case '5':
+            timer = new Timer();
             System.out.print("\nWprowadz pojemnosc plecaka\nPojemnosc: ");
             scanner = new Scanner(System.in);
             capacity = scanner.nextInt();
+            timer.start();
             System.out.print("\n" + knapsack.DynamicProgramming(capacity)+"\n");
-           
+            timer.end();
+            total = timer.getTotalTime();
+            total = (double)total/1000000.0;
+            System.out.print("\n"+total+"ms\n");
             break;
             
         case '6':
+            timer = new Timer();
             System.out.print("\nWprowadz pojemnosc plecaka\nPojemnosc: ");
             scanner = new Scanner(System.in);
             capacity = scanner.nextInt();
-            System.out.print("\n" + knapsack.pseudoPolynomialApproximateTimeScheme(capacity)+"\n");
+            System.out.print("\nWprowadz ograniczenie bledu\n(Warunek : 0 < E < 1 !)\nE: ");
+            scanner = new Scanner(System.in);
+            expo = scanner.nextDouble();
+            timer.start();
+            System.out.print("\n" + knapsack.fullyPolynomialApproximateTimeScheme(capacity,expo)+"\n");
+            timer.end();
+            total = (double)timer.getTotalTime();
+            total = total/1000000.0;
+            System.out.print("\n"+total+"ms\n");
             break;
             
         case '7':
