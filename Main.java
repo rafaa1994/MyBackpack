@@ -90,6 +90,7 @@ public class Main {
             scanner = new Scanner(System.in);
             capacity = scanner.nextInt();
             System.out.print("\n" + knapsack.pseudoPolynomialApproximateTimeScheme(capacity)+"\n");
+            break;
             
         case '7':
             System.out.print("\nWprowadz ilosc przedmiotow: ");

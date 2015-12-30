@@ -300,7 +300,10 @@ public class Knapsack {
     solution = "";
     
     double best_value = 0;
+    double best_weight = 0;
     int value_p = 0 ;
+    
+    if(!collection.isEmpty()){
     
     // wydobywamy najwieksza wartosc z kolekcji przedmiotow
     for(int i=0;i<collection.size();i++){
@@ -313,38 +316,54 @@ public class Knapsack {
     System.out.println("Limit:" + limit + "\n");
     
     // tworzymy tabele wyniku
-    double [][]table = new double[collection.size()][limit+1];
+    double [][]table = new double[collection.size()+1][limit+1];
     
-    for(int i = 0; i < collection.size();i++){
+    for(int i = 0; i <= collection.size();i++){
             table[i][0] = 0;
         for(int j = 1 ; j <= limit ; j++)
-            table[i][j] = -1;
+            table[i][j] = 9999;
         }
     
     // algorytm PTAS
     
     do {
     value_p += 1;
-        for(int i = 1; i < collection.size() ; i++){
+        for(int i = 1; i <= collection.size() ; i++){
         
             Item item_p = collection.get(i-1);
-            if(value_p - (int)item_p.getValue() < 0 || table[i-1][value_p - (int)item_p.getValue()] == -1)
+            if(value_p - (int)item_p.getValue() < 0 || table[i-1][value_p - (int)item_p.getValue()] == 9999)
             table[i][value_p] = table[i-1][value_p];
-            else table[i][value_p] = minimum(table[i-1][value_p],table[i-1][value_p - (int)item_p.getValue()] + item_p.getWeight());
-            if(table[collection.size()-1][value_p] <= capacity) best_value = value_p;
-            
+          
+            else  table[i][value_p] = minimum(table[i-1][value_p],table[i-1][value_p - (int)item_p.getValue()] + item_p.getWeight());
+            if(table[i][value_p] <= capacity) {best_value = value_p; best_weight = table[i][value_p]; }
+         
         }
         
     }while(value_p < limit);
     
-     for(int i = 0; i < collection.size();i++,System.out.println())
-        for(int j = 0 ; j < limit ; j++)
-            System.out.print(table[i][j] + "\t");
+        // szukamy rozwiązania w plecaku
         
+        int i = collection.size();
+        int j = (int)best_value; 
+        List<Item> tmp = new ArrayList();
+ 
+        while (i > 0 && j > 0 ){
+        
+            if (table[i][j] != table[i-1][j])
+            {
+                
+                tmp.add(collection.get(i-1));
+                j -= (int)collection.get(i-1).getValue();
+                i--;
+                
+            }
+            else i--;
+        
+        }
+            
+            solution =  prepareSolutionToDisplay(best_value,best_weight, tmp);
     
-    solution += "Najwyższa wartosc: " + best_value;
-    solution += "\nUzyskana waga: " + table[collection.size() - 1][(int)best_value] +"\n";
-    
+    }else solution = "\nBrak danych do przetworzenia";
     
     return solution;
     }
