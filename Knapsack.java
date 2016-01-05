@@ -343,11 +343,11 @@ public class Knapsack {
     for(int i = 0; i <= collection.size();i++){
             table[i][0] = 0;
         for(int j = 1 ; j <= limit ; j++)
-            table[i][j] = 99999;
+            table[i][j] = 9999;
         }
     
     // algorytm FPTAS
-    
+   
     do {
     value_p += 1;
         for(int i = 1; i <= tmp.size() ; i++){
@@ -383,13 +383,12 @@ public class Knapsack {
         
         }
             
-        
         for(int ix=0;ix<collection.size()+1;ix++,System.out.println(ix + ". "))
              for(int jx=0;jx<limit;jx++,System.out.print("\t")){
              System.out.print(table[ix][jx]);
              }
         
-            solution =  prepareSolutionToDisplay(best_value,best_weight, tmp2);
+    solution =  prepareSolutionToDisplay(best_value,best_weight, tmp2);
     
     }else solution = "\nBrak danych do przetworzenia";
     
