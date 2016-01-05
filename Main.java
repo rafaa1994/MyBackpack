@@ -28,7 +28,7 @@ public class Main {
         double total=0;
         ArrayList<Double> times = new ArrayList<Double>();
         
-    System.out.println("\nWitaj w programie\n");
+    
 
     do{
             System.out.print("MENU:"

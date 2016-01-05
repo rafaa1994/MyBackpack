@@ -205,6 +205,18 @@ public class Knapsack {
     return solution;
     }
     
+    public String prepareSolutionToDisplay2(double V,double V2,double W, List<Item> t,List<Item> t2){
+    solution="\n";
+    
+    solution += "Najwyższa wartosc: " + V + "\nNajwyższa wartosc po skalowaniu: " + V2;
+    solution += "\nUzyskana waga: " + W +"\n";
+    
+    for (int i =0; i<t.size();i++){
+            solution += t.get(i).getWeight()+" "+ t.get(i).getValue() + "\t" + t2.get(i).getWeight()+" "+ t2.get(i).getValue() +"\n";
+        }
+    
+    return solution;
+    }
     
     public String displayCollection(){
     
@@ -334,7 +346,7 @@ public class Knapsack {
     System.out.println(collection.get(i).getValue() +"\t"+ tmp.get(i).getValue());
     }
     
-    // Ustalamy wielkości tablicy według wzoru (n * tmp_best_value +1)
+    // Ustalamy wielkości tablicy według wzoru (n * tmp_best_value)
     int limit = (tmp.size() * (int)tmp_best_value);
      System.out.println("Limit: " + limit + "\n");
     // tworzymy tabele wyniku
@@ -343,7 +355,7 @@ public class Knapsack {
     for(int i = 0; i <= collection.size();i++){
             table[i][0] = 0;
         for(int j = 1 ; j <= limit ; j++)
-            table[i][j] = 99999;
+            table[i][j] = 9999;
         }
     
     // algorytm FPTAS
@@ -367,7 +379,10 @@ public class Knapsack {
         
         int i = collection.size();
         int j = (int)best_value; 
+        
+        //tmp2 dla przedmiotów przeskalowanych - opcjonalnie
         List<Item>tmp2 = new ArrayList();
+        List<Item>tmp3 = new ArrayList();
  
         while (i > 0 && j > 0 ){
         
@@ -375,6 +390,7 @@ public class Knapsack {
             {
                 
                 tmp2.add(tmp.get(i-1));
+                tmp3.add(collection.get(i-1));
                 j -= (int)tmp.get(i-1).getValue();
                 i--;
                 
@@ -389,7 +405,10 @@ public class Knapsack {
              System.out.print(table[ix][jx]);
              }
         
-            solution =  prepareSolutionToDisplay(best_value,best_weight, tmp2);
+        // w tym momencie interesuje nas najlepsza wartość w plecaku przedmiotów PRZED skalowaniem
+            double best_value2 = getValue(tmp3);
+        
+            solution =  prepareSolutionToDisplay2(best_value2,best_value,best_weight, tmp3,tmp2);
     
     }else solution = "\nBrak danych do przetworzenia";
     
