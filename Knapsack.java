@@ -23,10 +23,11 @@ import java.util.List;
  *
  * @author Rafał Stępień
  */
+
 public class Knapsack {
     String Com ="";
     String solution ="";
-    ArrayList<Item> collection = new ArrayList<Item>();
+    ArrayList<Item> collection = new ArrayList();
     
     public String readFromFile(String nameFile) {
     try{
@@ -68,7 +69,7 @@ public class Knapsack {
       Node root = new Node();      // węzeł korzenia drzewa
       root.computeBound(collection,capacity);
       
-      PriorityQueue<Node> q = new PriorityQueue<Node>();
+      PriorityQueue<Node> q = new PriorityQueue();
       q.offer(root);                // umieszczamy korzeń w kolejce
       
       while (!q.isEmpty()) {        // dopóki mamy węzły w kolejce
@@ -221,7 +222,7 @@ public class Knapsack {
     public String displayCollection(){
     
         String collectionInfo="\n";
-        for (Item item : collection){
+        for(Item item : collection){
             collectionInfo += item.getWeight()+" "+ item.getValue() + "\n";
         }
         
@@ -230,7 +231,7 @@ public class Knapsack {
     
     public List<Item> computeList(List<Item> items, int capacity){
     
-        List<Item> newOfPerm = new LinkedList<Item>();
+        List<Item> newOfPerm = new LinkedList();
         double weight=0;
         int i = 0;
         while(weight <= capacity || i <items.size()){
@@ -341,10 +342,10 @@ public class Knapsack {
         if(tmp_value > tmp_best_value) tmp_best_value = tmp_value;
     }
     
-    System.out.println("collection\ttmp" );
-    for(int i=0;i<collection.size();i++){
-    System.out.println(collection.get(i).getValue() +"\t"+ tmp.get(i).getValue());
-    }
+    //System.out.println("collection\ttmp" );
+    //for(int i=0;i<collection.size();i++){
+    //System.out.println(collection.get(i).getValue() +"\t"+ tmp.get(i).getValue());
+    //}
     
     // Ustalamy wielkości tablicy według wzoru (n * tmp_best_value)
     int limit = (tmp.size() * (int)tmp_best_value);
@@ -381,7 +382,7 @@ public class Knapsack {
         int j = (int)best_value; 
         
         //tmp2 dla przedmiotów przeskalowanych - opcjonalnie
-        List<Item>tmp2 = new ArrayList();
+       // List<Item>tmp2 = new ArrayList();
         List<Item>tmp3 = new ArrayList();
  
         while (i > 0 && j > 0 ){
@@ -389,7 +390,7 @@ public class Knapsack {
             if (table[i][j] != table[i-1][j])
             {
                 
-                tmp2.add(tmp.get(i-1));
+                //tmp2.add(tmp.get(i-1));
                 tmp3.add(collection.get(i-1));
                 j -= (int)tmp.get(i-1).getValue();
                 i--;
@@ -400,15 +401,19 @@ public class Knapsack {
         }
             
         
-        for(int ix=0;ix<collection.size()+1;ix++,System.out.println(ix + ". "))
-             for(int jx=0;jx<limit;jx++,System.out.print("\t")){
-             System.out.print(table[ix][jx]);
-             }
+       // for(int ix=0;ix<collection.size()+1;ix++,System.out.println(ix + ". "))
+       //      for(int jx=0;jx<limit;jx++,System.out.print("\t")){
+       //      System.out.print(table[ix][jx]);
+       //      }
         
         // w tym momencie interesuje nas najlepsza wartość w plecaku przedmiotów PRZED skalowaniem
             double best_value2 = getValue(tmp3);
         
-            solution =  prepareSolutionToDisplay2(best_value2,best_value,best_weight, tmp3,tmp2);
+            // wyświetlenie zawartości przeskalowanych oraz pierwotnych w celu porównania
+            //solution =  prepareSolutionToDisplay2(best_value2,best_value,best_weight, tmp3,tmp2);
+            
+            // Wynik algorytmu
+            solution =  prepareSolutionToDisplay(best_value2,best_weight, tmp3);
     
     }else solution = "\nBrak danych do przetworzenia";
     
@@ -416,12 +421,13 @@ public class Knapsack {
     }
 
     public void generateCollection(int size){
-        collection = new ArrayList<Item>();
+        collection = new ArrayList();
         
         for (int i=0;i<size;i++){
         Random generator = new Random();
         Item tmp = new Item(Math.floor(generator.nextDouble()*29),Math.floor(generator.nextDouble()*100));
-        collection.add(tmp);
+        if(tmp.getValue() == 0.0 || tmp.getWeight() == 0.0) i--;
+        else collection.add(tmp);
         }
     }
     
